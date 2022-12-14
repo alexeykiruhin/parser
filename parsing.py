@@ -1,13 +1,12 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-# URL = 'https://dzen.ru/news/rubric/personal_feed?issue_tld=ru'
-
-
 
 def pars(url):
-    # print('pars')
-    """метод для парсинга новостей"""
+    """Подключаем Selenium, парсим ссылку на статью и проверяем её на дубликаты.
+    Возвращаем список из 2х элементов: [0] - новость, [1] - ссылка на изображение"""
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--window-size=1420,1080')
@@ -18,19 +17,32 @@ def pars(url):
     try:
         driver.get(url)
         # ссылка на статью
-        es = driver.find_elements(By.CLASS_NAME, 'mg-card__link')
-        print(str(es))
-        elements = driver.find_element(By.CLASS_NAME, 'mg-card__link')
+        last_news = driver.find_element(By.CLASS_NAME, 'mg-card__link')
         # получаем ссылку на последнюю новость
-        href = elements.get_attribute('href')
-        # print(href)
-        # получаем изображение для новости
-        img = driver.find_element(By.CLASS_NAME, 'neo-image_loaded')
-        img_url = img.get_attribute('src')
-        # парсим новость
-        out[0] = make_message(driver, href)
-        # добавляем в сисок ссылку изображения
-        out[1] = img_url
+        href = last_news.get_attribute('href')
+        name_news = last_news.text
+        print(f'New news: {name_news}')
+
+        # Read file
+        data = read_file()
+
+        # Duplicate check and write to file
+        print("Duplicate check ...")
+        if name_news not in data:
+            print('Not duplicate')
+            data.append(name_news)
+            write_to_file(data)
+            print("Write to file")
+            # получаем изображение для новости
+            img = driver.find_element(By.CLASS_NAME, 'neo-image_loaded')
+            img_url = img.get_attribute('src')
+            # парсим новость
+            out[0] = make_message(driver, href)
+            # добавляем в сисок ссылку изображения
+            out[1] = img_url
+        else:
+            print('Duplicate')
+            return False
     except Exception as _ex:
         print(_ex)
     finally:
@@ -41,17 +53,30 @@ def pars(url):
     return out
 
 
+def write_to_file(data):
+    """Write to file"""
+    with open('last_news_list.json', 'w') as outfile:
+        outfile.write(json.dumps(data))
+
+
+def read_file():
+    """Read file"""
+    with open('last_news_list.json') as json_file:
+        data = json.load(json_file)
+        print('Read file')
+        print(f'Count news: {len(data)}')
+        print(data)
+    return data
+
+
 def make_message(driver, href):
-    # print('make_message')
-    """Метод для генерации сообщения"""
+    """Парсим новость если она прошла проверку на дубликаты.
+    Возвращаем новость в виде текста"""
     # парсим новость
     driver.get(href)
     # название новости
     news_title = driver.find_element(By.CLASS_NAME, 'mg-story__title')
     news_title = news_title.text
-    # print('title')
-    # print(news_title)
-
     # текст новости
     news_body_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__text')
     news_body_list = [b.text for b in news_body_data]
