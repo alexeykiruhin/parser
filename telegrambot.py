@@ -33,14 +33,15 @@ def send_news():
         # парсим новости
         try:
             news = pars(URL)
+            # print(f'news - {news}')
             if not news:
                 print('Sleep after duplicate')
-                time.sleep(100)
+                time.sleep(30)
                 continue
-        except Exception as _ex:
-            print(_ex)
+        except:
+            print('Error pars')
         # finally:
-        #     # news = 'Reloading...'
+        #     time.sleep(300)
         current = datetime.now()
         # bot.send_message(CHANNEL_NAME, 'Stop Parsing')
         print('Stop Parsing')
@@ -48,11 +49,56 @@ def send_news():
         # bot.send_message(CHANNEL_NAME, 'Time: ' + str(t))
         print('Time: ' + str(t))
         print('Длина новости = ' + str(len(news[0])))
-        bot.send_photo(CHANNEL_NAME, news[1], caption=news[0], parse_mode='Markdown')
+        # print(f'описание - {news[0]}')
+        # print(f'ссылка на картинку - {news[1]}')
+        # bot.send_photo(CHANNEL_NAME, news[1], caption=news[0], parse_mode='Markdown')
+        # time.sleep(10)
+        try:
+            # bot.send_photo(CHANNEL_NAME, news[1], caption=news[0])
+            bot.send_photo(CHANNEL_NAME, news[1], caption=news[0], parse_mode='Markdown')
+        except:
+            bot.send_photo(CHANNEL_NAME, news[1], caption=news[0], parse_mode='Markdown')
+            # bot.send_message(CHANNEL_NAME, news[0], parse_mode='Markdown', disable_web_page_preview=True)
+            print('Error send')
+            time.sleep(10)
+
         # сообщение без картинки
         # bot.send_message(CHANNEL_NAME, news[0], parse_mode='Markdown', disable_web_page_preview=True)
-        time.sleep(100)
+
+
+    # # получаем новость
+    # news = ['', '']
+    # # приветственная фраза - убрано
+    # print('Start Parsing')
+    # # засекаем ремя парсинга
+    # now = datetime.now()
+    # # парсим новости
+    # try:
+    #     news = pars(URL)
+    # except:
+    #     print('Error pars')
+    # if not news:
+    #     print('Sleep after duplicate')
+    #     time.sleep(100)
+    # else:
+    #     current = datetime.now()
+    #     print('Stop Parsing')
+    #     t = current - now
+    #     print('Time: ' + str(t))
+    #     print('Длина новости = ' + str(len(news[0])))
+    #     img = news[1]
+    #     desc = news[0]
+    #     try:
+    #         bot.send_photo(CHANNEL_NAME, img, caption=desc, parse_mode='Markdown')
+    #         print('SEND_PHOTO')
+    #     except:
+    #         bot.send_photo(CHANNEL_NAME, img, caption=desc, parse_mode='Markdown')
+    #         # bot.send_message(CHANNEL_NAME, news[0], parse_mode='Markdown', disable_web_page_preview=True)
+    #         print('Error send')
+    #         time.sleep(100)
 
 
 if __name__ == '__main__':
+    # while True:
+    #     send_news()
     send_news()
