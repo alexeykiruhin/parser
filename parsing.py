@@ -62,7 +62,7 @@ def pars(url):
         print(name_news)
         z = 0
         out[0] = '*' + news_title + '*'
-        # ограничение на количество новостей, что бы влесть в описание картинки
+        # ограничение на количество новостей, что бы влезть в описание картинки
         while z < 3:  # len(news_body_list):
             out[0] += '\n' + '\n' + news_body_list[z] + '\n' \
                       + 'Источник: ' + source_name_list[z] + '\n' \
