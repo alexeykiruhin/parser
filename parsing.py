@@ -50,13 +50,13 @@ def pars(url):
         news_title = news_title.text
         # текст новости
         news_body_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__text')
-        news_body_list = [b.text for b in news_body_data]
+        news_body_list = [b.text for b in news_body_data[::-1]]
         # название источника
         source_name_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__agency')
-        source_name_list = [n.text for n in source_name_data]
+        source_name_list = [n.text for n in source_name_data[::-1]]
         # ссылка на источник
         source_url_data = driver.find_elements(By.CLASS_NAME, 'mg-snippets-group__source')
-        source_url_list = [n.get_attribute('href') for n in source_url_data]
+        source_url_list = [n.get_attribute('href') for n in source_url_data[::-1]]
         # конечное сообщение
         print('make msg2')
         print(name_news)
@@ -118,146 +118,3 @@ def read_file():
         finally:
             print(f'Count news: {len(d)}')
     return d
-
-
-# def make_message(driver, href):
-#     """Парсим новость если она прошла проверку на дубликаты.
-#     Возвращаем новость в виде текста"""
-#     # парсим новость
-#     print('make msg')
-#     driver.get(href)
-#     print('make msg2')
-#     # название новости
-#     news_title = driver.find_element(By.CLASS_NAME, 'mg-story__title')
-#     news_title = news_title.text
-#     # текст новости
-#     news_body_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__text')
-#     news_body_list = [b.text for b in news_body_data]
-#     # название источника
-#     source_name_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__agency')
-#     source_name_list = [n.text for n in source_name_data]
-#     # ссылка на источник
-#     source_url_data = driver.find_elements(By.CLASS_NAME, 'mg-snippets-group__source')
-#     source_url_list = [n.get_attribute('href') for n in source_url_data]
-#     # конечное сообщение
-#     z = 0
-#     out = '*' + news_title + '*'
-#     # ограничение на количество новостей, что бы влесть в описание картинки
-#     while z < 3:  # len(news_body_list):
-#         out += '\n' + '\n' + news_body_list[z] + '\n' \
-#                + 'Источник: ' + source_name_list[z] + '\n' \
-#                + '[Ссылка](' + source_url_list[z] + ')'
-#         z += 1
-#
-#     return out
-
-
-# def make_message(href):
-#     """Парсим новость если она прошла проверку на дубликаты.
-#     Возвращаем новость в виде текста"""
-#     # парсим новость
-#     driver = webdriver.Chrome(options=chrome_options)
-#     try:
-#         driver.get(href)
-#         # time.sleep(10)
-#     except:
-#         print('Error pars body news')
-#     finally:
-#         # название новости
-#         news_title = driver.find_element(By.CLASS_NAME, 'mg-story__title')
-#         news_title = news_title.text
-#         # текст новости
-#         news_body_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__text')
-#         news_body_list = [b.text for b in news_body_data]
-#         # название источника
-#         source_name_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__agency')
-#         source_name_list = [n.text for n in source_name_data]
-#         # ссылка на источник
-#         source_url_data = driver.find_elements(By.CLASS_NAME, 'mg-snippets-group__source')
-#         source_url_list = [n.get_attribute('href') for n in source_url_data]
-#
-#         driver.close()
-#         driver.quit()
-#
-#         z = 0
-#         # конечное сообщение
-#         out = ['', '']
-#         out[0] = '*' + news_title + '*'
-#         # ограничение на количество новостей, что бы влесть в описание картинки
-#         while z < 3:  # len(news_body_list):
-#             out[0] += '\n' + '\n' + news_body_list[z] + '\n' \
-#                       + 'Источник: ' + source_name_list[z] + '\n' \
-#                       + '[Ссылка](' + source_url_list[z] + ')'
-#             z += 1
-#
-#         return out
-
-
-# def pars(url):
-#     """Подключаем Selenium, парсим ссылку на статью и проверяем её на дубликаты.
-#     Возвращаем список из 2х элементов: [0] - новость, [1] - ссылка на изображение"""
-#     out = ['', '']
-#     try:
-#         driver.get(url)
-#         # ссылка на статью
-#         last_news = driver.find_element(By.CLASS_NAME, 'mg-card__link')
-#         # получаем ссылку на последнюю новость
-#         href = last_news.get_attribute('href')
-#         name_news = last_news.text
-#         print(f'New news: {name_news}')
-#
-#         # Read file
-#         data = read_file()
-#
-#         # # получаем изображение для новости
-#         img = driver.find_element(By.CLASS_NAME, 'neo-image_loaded')
-#         img_url = img.get_attribute('src')
-#
-#         driver.get(href)
-#         # название новости
-#         news_title = driver.find_element(By.CLASS_NAME, 'mg-story__title')
-#         news_title = news_title.text
-#         # текст новости
-#         news_body_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__text')
-#         news_body_list = [b.text for b in news_body_data]
-#         # название источника
-#         source_name_data = driver.find_elements(By.CLASS_NAME, 'mg-snippet__agency')
-#         source_name_list = [n.text for n in source_name_data]
-#         # ссылка на источник
-#         source_url_data = driver.find_elements(By.CLASS_NAME, 'mg-snippets-group__source')
-#         source_url_list = [n.get_attribute('href') for n in source_url_data]
-#         # конечное сообщение
-#         print('make msg2')
-#         print(name_news)
-#         z = 0
-#         out[0] = '*' + news_title + '*'
-#         # ограничение на количество новостей, что бы влесть в описание картинки
-#         while z < 3:  # len(news_body_list):
-#             out[0] += '\n' + '\n' + news_body_list[z] + '\n' \
-#                       + 'Источник: ' + source_name_list[z] + '\n' \
-#                       + '[Ссылка](' + source_url_list[z] + ')'
-#             z += 1
-#         # добавляем в сисок ссылку изображения
-#         out[1] = img_url
-#
-#         # Duplicate check and write to file
-#         # print("Duplicate check ...")
-#         if name_news not in data:
-#             print('Not duplicate')
-#             data.append(name_news)
-#             write_to_file(data)
-#             print('after')
-#             # парсим новость
-#             # out[0] = make_message(driver, href)
-#             print('end write')
-#         else:
-#             out = []
-#             print('Duplicate')
-#
-#     except:
-#         print('Error')
-#     finally:
-#         print('finally')
-#
-#     # print(f'Return {out}')
-#     return out
